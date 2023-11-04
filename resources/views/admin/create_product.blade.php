@@ -52,16 +52,10 @@
 
                                     <div class="col-12 col-md-6  mb-3">
                                         <label for="from_branch" class="col-form-label">{{ __('From-Branch') }}</label>
-                                        <select name="from_branch" id="from_branch"
-                                            class="form-select input-lg dynamic @error('from_branch') is-invalid @enderror">
-
-                                            <option selected disabled value="">{{ __('Select Branch') }}
-                                            </option>
-                                            @foreach ($data as $branch)
-                                                <option value="{{ $branch->id }}">{{ $branch->branch_name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <input type="hidden" name="from_branch" value="{{ $firstBranch->id }}">
+                                        <input type="text" value="{{ $firstBranch->branch_name }}" readonly
+                                        class="form-control   @error('from_branch') is-invalid @enderror" type="phone"
+                                        id="from_branch">
                                         @error('from_branch')
                                             <span class="invalid-feedback">
                                                 {{ $message }}
@@ -183,11 +177,11 @@
                             <div class="row mb-3">
 
                                 <div class="col-md-2  mb-3">
-                                    <label for="price" class=" col-form-label">
+                                    <label for="package_tag" class=" col-form-label">
                                         {{ __('Package Tag') }}</label>
                                     <input name="package_tag" disabled value="{{ old('price') }}"
                                         class="form-control   @error('package_tag') is-invalid @enderror" type="number"
-                                        id="price" placeholder="">
+                                        id="package_tag" placeholder="">
                                     @error('package_tag')
                                         <span class="invalid-feedback">
                                             {{ $message }}
@@ -196,11 +190,18 @@
                                 </div>
 
                                 <div class=" col-md-2  mb-3">
-                                    <label for="package_type" class=" col-form-label"> <span class="text-danger">*</span>
+                                    <label for="package_type" class="col-form-label"> <span class="text-danger">*</span>
                                         {{ __('Package Type') }}</label>
-                                    <input name="package_type" value="{{ old('package_type') }}"
-                                        class="form-control   @error('package_type') is-invalid @enderror" type="text"
-                                        id="price" placeholder="">
+                                        <select name="package_type" id="package_type"
+                                        class="form-select input-lg dynamic package_type @error('package_type') is-invalid @enderror">
+                                       
+                                        <option selected disabled value="">{{ __('Select Package Type') }}
+                                        </option>
+                                        @foreach ($category as $categories)
+                                            <option value="{{ $categories->id }}">{{ $categories->category }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                     @error('package_type')
                                         <span class="invalid-feedback">
                                             {{ $message }}
@@ -208,13 +209,26 @@
                                     @enderror
                                 </div>
 
-                                <div class=" col-md-2  mb-3">
+                                 <div class=" col-md-2  mb-3">
                                     <label for="price" class=" col-form-label"> <span class="text-danger">*</span>
                                         {{ __('Weight') }}</label>
-                                    <input name="weight" value="{{ old('price') }}"
-                                        class="form-control   @error('weight') is-invalid @enderror" type="number"
-                                        id="price" placeholder="">
+                                        <select name="weight" id="weight"
+                                        class="form-select input-lg weight_list @error('weight') is-invalid @enderror">
+                                        <option value="0" selected disabled>weight</option>
+                                    </select>
                                     @error('weight')
+                                        <span class="invalid-feedback">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
+                                </div>
+                                 <div class=" col-md-2  mb-3">
+                                    <label for="price" class=" col-form-label"> <span class="text-danger">*</span>
+                                        {{ __('price') }}</label>
+                                    <input name="price" value="" readonly
+                                        class="form-control   " type="number"
+                                        id="price" placeholder="">
+                                    @error('price')
                                         <span class="invalid-feedback">
                                             {{ $message }}
                                         </span>
@@ -242,18 +256,7 @@
                                         </span>
                                     @enderror
                                 </div>
-                                <div class=" col-md-2  mb-3">
-                                    <label for="price" class=" col-form-label"> <span class="text-danger">*</span>
-                                        {{ __('price') }}</label>
-                                    <input name="price" value="{{ old('price') }}"
-                                        class="form-control @error('price') is-invalid @enderror " type="number"
-                                        id="price" placeholder="Price">
-                                    {{-- @error('price')
-                                        <span class="invalid-feedback">
-                                            {{ $message }}
-                                        </span>
-                                    @enderror --}}
-                                </div>
+                                
 
                                 {{-- <div class=" col-md-3  mb-3">
                                     <label for="price" class=" col-form-label"> <span class="text-danger">*</span>
@@ -297,6 +300,65 @@
 
         </section>
     </main>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+        $(document).on('change', '.package_type', function(){  
+            var cat_id = $(this).val();
+           
+            var div = $(this).parent();
+            var op = "";
+
+            $.ajax({
+                type: 'get',
+                url:'{!!URL::to('fetchWeight')!!}',
+				data:{'id':cat_id},
+				success:function(data){
+				
+					// console.log(data.length);
+					op+='<option value="0" selected disabled>choose weight</option>';
+					for(var i=0;i<data.length;i++){
+					op+='<option value="'+data[i].id+'">'+data[i].weight+'</option>';
+                    
+                }
+                var weightList = document.getElementById('weight');
+             
+                   weightList.innerHTML = op;
+                    
+            }
+            })
+        });
+        $(document).on('change','.weight_list',function () {
+			var weight_id=$(this).val();
+
+			var a=$(this).parent();
+			console.log(weight_id);
+			var op="";
+			$.ajax({
+				type:'get',
+				url:'{!!URL::to('fetchPrice')!!}',
+				data:{'id':weight_id},
+				dataType:'json',
+				success:function(data){
+			
+			
+                    var price_field = document.getElementById('price');
+                  
+                    price_field.value = data.price;
+				},
+				error:function(){
+
+				}
+			});
+
+
+		});
+
+    });
+    </script>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     @if (Session::has('success'))

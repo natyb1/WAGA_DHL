@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\customer;
 use App\Models\package;
+use App\Models\PackageCategory;
 use App\Models\Product;
+use App\Models\WeightPrice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -32,7 +34,9 @@ class ProductController extends Controller
     {
         $data= DB::table('branches')->get();
         // dd($data);
-        return view('admin.create_product')->with('data', $data);
+        $firstBranch = DB::table('branches')->first();
+        $category = PackageCategory::all();
+        return view('admin.create_product',compact('data', 'firstBranch','category'));
     
     }
 
@@ -120,5 +124,13 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+    public function fetchWeight(Request $request){
+        $data = WeightPrice::select('id','weight')->where('cat_id',$request->id)->take(10)->get();
+        return response()->json($data);  
+    }
+    public function fetchPrice(Request $request){
+        $weight_price = WeightPrice::select('price')->where('id',$request->id)->first();
+        return response()->json($weight_price);  
     }
 }

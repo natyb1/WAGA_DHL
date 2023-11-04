@@ -28,7 +28,8 @@ Route::get('/product/create', [App\Http\Controllers\ProductController::class, 'c
 Route::post('/product/save', [App\Http\Controllers\ProductController::class, 'store'])->name('products.store');
 Route::get('/product/{id}/detail', [App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
 Route::get('/product/{id}/edit', [App\Http\Controllers\ProductController::class, 'edit'])->name('products.edit');
-
+Route::get('/fetchWeight',[App\Http\Controllers\ProductController::class, 'fetchWeight']);
+Route::get('/fetchPrice',[App\Http\Controllers\ProductController::class, 'fetchPrice']);
 
 
 

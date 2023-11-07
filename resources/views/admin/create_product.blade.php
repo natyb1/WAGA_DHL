@@ -65,7 +65,7 @@
                                     <div class="col-12 col-md-6  mb-3">
                                         <label for="sender_city" class="col-form-label">{{ __('Sender City') }}</label>
                                         
-                                        <input type="text" value="{{ $firstBranch->city }}" readonly
+                                        <input type="text" name="sender_city" value="{{ $firstBranch->city }}" readonly
                                         class="form-control   @error('sender_city') is-invalid @enderror" type="phone"
                                         id="sender_city">
                                         @error('sender_city')
@@ -140,28 +140,29 @@
                                     @enderror
                                 </div>
 
-                                <div class="col-12 col-md-6  mb-3 search_select_box ">
-                                    <label for="to_branch" class="col-form-label">{{ __('To-Branch') }}</label>
-                                    <select name="to_branch" id="to_branch" data-live-search="true" 
-                                        class="bg-white border selectpicker @error('to_branch') is-invalid @enderror" >
-
-                                        <option selected disabled value="">{{ __('Select Branch') }}
-                                        </option>
-                                        @foreach ($receiversBranch as $branch)
-                                            <option value="{{ $branch->id }}">{{ $branch->branch_name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('to_branch')
-                                        <span class="invalid-feedback">
-                                            {{ $message }}
-                                        </span>
-                                    @enderror
+                                <div class="container">
+                                    <!-- Include the provided HTML code for the select dropdown with search -->
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <label for="to_branch" class="col-form-label">{{ __('To-Branch') }}</label>
+                                        <input type="text" id="branch_search" class="form-control" placeholder="Search Branch">
+                                        <select name="to_branch" id="to_branch" class="border custom-select @error('to_branch') is-invalid @enderror">
+                                            <option selected disabled value="">{{ __('Select Branch') }}</option>
+                                            @foreach ($receiversBranch as $branch)
+                                                <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('to_branch')
+                                            <span class="invalid-feedback">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div>
                                 </div>
+                            
                                 <div class="col-12 col-md-6  mb-3">
                                     <label for="receiver_city" class="col-form-label">{{ __('Receiver City') }}</label>
                                     
-                                    <input type="text" class="form-control   @error('receiver_city') is-invalid @enderror" type="phone"
+                                    <input type="text" name="receiver_city" class="form-control   @error('receiver_city') is-invalid @enderror" type="phone"
                                     id="receiver_city">
                                     @error('receiver_city')
                                         <span class="invalid-feedback">
@@ -191,20 +192,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ __('Package Detail') }}</h5>
                             <div class="row mb-3">
-
-                                <div class="col-md-2  mb-3">
-                                    <label for="package_tag" class=" col-form-label">
-                                        {{ __('Package Tag') }}</label>
-                                    <input name="package_tag" disabled value="{{ old('price') }}"
-                                        class="form-control   @error('package_tag') is-invalid @enderror" type="number"
-                                        id="package_tag" placeholder="">
-                                    @error('package_tag')
-                                        <span class="invalid-feedback">
-                                            {{ $message }}
-                                        </span>
-                                    @enderror
-                                </div>
-
+                               
                                 <div class=" col-md-2  mb-3">
                                     <label for="package_type" class="col-form-label"> <span class="text-danger">*</span>
                                         {{ __('Package Type') }}</label>
@@ -253,7 +241,7 @@
                                 <div class="col-md-2  mb-3">
                                     <label for="status" class="col-form-label">{{ __('Status') }}</label>
                                     
-                                    <input type="text" value="Collected" readonly
+                                    <input name="status" type="text" value="{{"collected"}}" readonly
                                     class="form-control   @error('status') is-invalid @enderror" type="phone"
                                     id="status">
                                     @error('status')
@@ -307,17 +295,40 @@
 
         </section>
     </main>
-    {{-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" ></script> --}}
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js" ></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js" ></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script type="text/javascript">
-     $(document).ready(function(){
-       var a = $('search_select_box select').selectpicker();
-           });
-</script>
+    {{-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            var selectpicker = $('.selectpicker').val();
+        });
+    </script> --}}
+ <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var branchSelect = document.getElementById('to_branch');
+            var branchSearchInput = document.getElementById('branch_search');
+
+            branchSearchInput.addEventListener('input', function() {
+                var filter = branchSearchInput.value.toLowerCase();
+                var options = branchSelect.getElementsByTagName('option');
+
+                for (var i = 0; i < options.length; i++) {
+                    var option = options[i];
+                    var branchName = option.textContent.toLowerCase();
+                    if (branchName.includes(filter)) {
+                        option.style.display = '';
+                    } else {
+                        option.style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function(){
         $(document).on('change', '.package_type', function(){  
@@ -373,7 +384,8 @@
 
     });
     </script>
-
+    
+  
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 

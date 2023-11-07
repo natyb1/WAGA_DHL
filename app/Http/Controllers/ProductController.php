@@ -47,6 +47,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+            // dd($request->to_branch);
             $data= $request->validate([
                 'sender_name' => 'required',
                 'sender_phone' => 'required|unique:customers,phone|max:9',

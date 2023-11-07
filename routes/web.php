@@ -33,7 +33,4 @@ Route::get('/fetchPrice',[App\Http\Controllers\ProductController::class, 'fetchP
 
 
 
-
-
-
 Route::get('/fallback', [App\Http\Controllers\HomeController::class, 'fallback'])->name('fallback');

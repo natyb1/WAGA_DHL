@@ -19,10 +19,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-         $data= DB::table('packages')
-         ->join('branches','branches.id','=','packages.from_branch_id')
-         ->join('customers','customers.id','=','packages.customer_ID')         
-         ->get();
+        $data= DB::table('packages')
+        ->join('customers as t1','t1.id','=','packages.sender_ID')         
+        ->join('customers as t2','t2.id','=','packages.receiver_ID')  
+        ->select('packages.*','t1.name as sender_name','t1.phone as sender_phone','t1.city as sender_city','t2.name as receiver_name','t2.phone as receiver_phone','t2.city as receiver_city')       
+        ->get();
 
         return view('admin.view_all_products',compact('data'));  
     }
@@ -35,8 +36,9 @@ class ProductController extends Controller
         $data= DB::table('branches')->get();
         // dd($data);
         $firstBranch = DB::table('branches')->first();
+        $receiversBranch = DB::table('branches')->where('id','<>',$firstBranch->id)->get();
         $category = PackageCategory::all();
-        return view('admin.create_product',compact('data', 'firstBranch','category'));
+        return view('admin.create_product',compact('data', 'firstBranch','category','receiversBranch'));
     
     }
 
@@ -47,11 +49,11 @@ class ProductController extends Controller
     {
             $data= $request->validate([
                 'sender_name' => 'required',
-                'sender_phone' => 'required|unique:customers|max:9',
+                'sender_phone' => 'required|unique:customers,phone|max:9',
                 'from_branch' => 'required',
                 'sender_city' => 'required',
                 'receiver_name' => 'required',
-                'receiver_phone' => 'required|unique:customers|max:9',
+                'receiver_phone' => 'required|unique:customers,phone|max:9',
                 'to_branch' => 'required',
                 'receiver_city' => 'required',
                 'package_type' => 'required',
@@ -59,19 +61,23 @@ class ProductController extends Controller
                 'status' => 'required',
                
             ]);
-            $customerInfo = customer::create([
-                'sender_name' => $request->sender_name,
-                'sender_phone' => $request->sender_phone,
-                'sender_city' => $request->sender_city,
-                'receiver_name' => $request->receiver_name,
-                'receiver_phone' => $request->receiver_phone,
-                'receiver_city' => $request->receiver_city,
+            $senderInfo = customer::create([
+                'name' => $request->sender_name,
+                'phone' => $request->sender_phone,
+                'city' => $request->sender_city,
+            
+            ]);
+            $receiverInfo = customer::create([
+                'name' => $request->receiver_name,
+                'phone' => $request->receiver_phone,
+                'city' => $request->receiver_city,
             ]);
        
             $package = package::create([
                 'package_tag' => 'package-'. Str::random(5),
                 'package_type' => $request->package_type,
-                'customer_ID' => $customerInfo->id,
+                'sender_ID' => $senderInfo->id,
+                'receiver_ID' => $receiverInfo->id,
                 'status' => $request->status,
                 'from_branch_id' => $request->from_branch,
                 'to_branch_id' => $request->to_branch,

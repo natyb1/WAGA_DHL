@@ -13,12 +13,9 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->string('sender_name');
-            $table->unsignedInteger('sender_phone')->unique()->length(9);
-            $table->string('sender_city');
-            $table->string('receiver_name');
-            $table->unsignedInteger('receiver_phone')->unique()->length(9);
-            $table->string('receiver_city');
+            $table->string('name');
+            $table->unsignedInteger('phone')->unique()->length(9);
+            $table->string('city');
             $table->timestamps();
         });
     }

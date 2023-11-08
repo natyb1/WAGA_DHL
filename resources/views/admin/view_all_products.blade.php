@@ -101,10 +101,11 @@
                                                                                     <label for="sender_name"
                                                                                         class=" col-form-label"><span
                                                                                             class="text-danger">*</span>{{ __('Sender Name') }}</label>
-                                                                                    <input name="sender_name" value=""
+                                                                                    <input name="sender_name"
+                                                                                        value="{{ $data->sender_name }}"
                                                                                         class="form-control  @error('sender_name') is-invalid @enderror"
                                                                                         type="text"
-                                                                                        placeholder="Isac Newton">
+                                                                                        placeholder="Isac Newton" />
                                                                                     @error('sender_name')
                                                                                         <span class="invalid-feedback">
                                                                                             {{ $message }}
@@ -120,7 +121,7 @@
                                                                                         <span class="input-group-text"
                                                                                             id="basic-addon1">+251</span>
                                                                                         <input name="sender_phone"
-                                                                                            value=""
+                                                                                            value="{{ $data->sender_phone }}"
                                                                                             class="form-control   @error('sender_phone') is-invalid @enderror"
                                                                                             type="number" id="sender_phone"
                                                                                             aria-label="sender_phone"
@@ -164,7 +165,7 @@
                                                                                     @enderror
                                                                                 </div>
 
-                                                                                <div class="col-12   mb-3">
+                                                                                <div class="col-12 mb-3">
                                                                                     <label for="sender_city"
                                                                                         class=" col-form-label"><span
                                                                                             class="text-danger">*</span>{{ __('Sender City') }}</label>

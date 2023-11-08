@@ -144,8 +144,16 @@
                     <li> --}}
             <hr class="dropdown-divider">
             </li>
-            <li> <a class="dropdown-item d-flex align-items-center" href=""> <i
-                        class="bi bi-box-arrow-right"></i> <span>Sign Out</span> </a></li>
+            <li>
+
+                <form action="{{ route('logout') }}" method="post">
+                    @csrf
+                    <button class="dropdown-item text-danger">
+                        <i class="ri-shut-down-line align-middle me-1 text-danger"></i> {{ __('Logout') }}
+                    </button>
+
+                </form>
+            </li>
         </ul>
         </li>
         </ul>

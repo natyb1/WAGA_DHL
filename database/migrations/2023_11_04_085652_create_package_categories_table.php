@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('customers', function (Blueprint $table) {
+        Schema::create('package_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->unsignedInteger('phone')->unique()->length(9);
-            $table->string('city');
+            $table->string('category');
             $table->timestamps();
         });
     }
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('customers');
+        Schema::dropIfExists('package_categories');
     }
 };

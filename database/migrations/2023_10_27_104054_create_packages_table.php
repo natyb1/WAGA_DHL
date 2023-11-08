@@ -15,12 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('package_tag');
             $table->string('package_type');
-            $table->unsignedBigInteger('customer_ID');
+            $table->unsignedBigInteger('sender_ID');
+            $table->unsignedBigInteger('receiver_ID');
             $table->string('status');
             $table->unsignedBigInteger('from_branch_id');
             $table->unsignedBigInteger('to_branch_id');
             $table->float('weight');
-            $table->foreign('customer_ID')->references('id')->on('customers');
+            $table->foreign('sender_ID')->references('id')->on('customers');
+            $table->foreign('receiver_ID')->references('id')->on('customers');
             $table->foreign('from_branch_id')->references('id')->on('branches');
             $table->foreign('to_branch_id')->references('id')->on('branches');
             $table->timestamps();

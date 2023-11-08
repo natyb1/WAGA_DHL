@@ -52,37 +52,39 @@
 
                                     <div class="col-12 col-md-6  mb-3">
                                         <label for="from_branch" class="col-form-label">{{ __('From-Branch') }}</label>
-                                        <select name="from_branch" id="from_branch"
-                                            class="form-select input-lg dynamic @error('from_branch') is-invalid @enderror">
-
-                                            <option selected disabled value="">{{ __('Select Branch') }}
-                                            </option>
-                                            @foreach ($data as $branch)
-                                                <option value="{{ $branch->id }}">{{ $branch->branch_name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <input type="hidden" name="from_branch" value="{{ $firstBranch->id }}">
+                                        <input type="text" value="{{ $firstBranch->branch_name }}" readonly
+                                        class="form-control   @error('from_branch') is-invalid @enderror" type="phone"
+                                        id="from_branch">
                                         @error('from_branch')
                                             <span class="invalid-feedback">
                                                 {{ $message }}
                                             </span>
                                         @enderror
                                     </div>
-                                    <div class="col-12   mb-3">
-                                        <label for="sender_city" class=" col-form-label"><span
-                                                class="text-danger">*</span>{{ __('Sender City') }}</label>
-                                        {{-- <input name="description"value="{{ old('description') }}"
-                                            class="form-control   @error('description') is-invalid @enderror" type="text"
-                                            id="description" placeholder="Description"> --}}
-
-                                        <textarea name="sender_city" class="form-control   @error('sender_city') is-invalid @enderror" id="sender_city"
-                                            placeholder="Address"></textarea>
+                                    <div class="col-12 col-md-6  mb-3">
+                                        <label for="sender_city" class="col-form-label">{{ __('Sender City') }}</label>
+                                        
+                                        <input type="text" name="sender_city" value="{{ $firstBranch->city }}" readonly
+                                        class="form-control   @error('sender_city') is-invalid @enderror" type="phone"
+                                        id="sender_city">
                                         @error('sender_city')
                                             <span class="invalid-feedback">
                                                 {{ $message }}
                                             </span>
                                         @enderror
                                     </div>
+                                    {{-- <div class="col-12   mb-3">
+                                        <label for="sender_city" class=" col-form-label"><span
+                                                class="text-danger">*</span>{{ __('Sender City') }}</label>
+                                        <textarea name="sender_city" value="{{ $firstBranch->city }}" class="form-control   @error('sender_city') is-invalid @enderror" id="sender_city"
+                                            placeholder="Address"></textarea>
+                                        @error('sender_city')
+                                            <span class="invalid-feedback">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div> --}}
                                 </div>
                         </div>
                     </div>
@@ -138,31 +140,40 @@
                                     @enderror
                                 </div>
 
+                                <div class="container">
+                                    <!-- Include the provided HTML code for the select dropdown with search -->
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <label for="to_branch" class="col-form-label">{{ __('To-Branch') }}</label>
+                                        <input type="text" id="branch_search" class="form-control" placeholder="Search Branch">
+                                        <select name="to_branch" id="to_branch" class="border custom-select @error('to_branch') is-invalid @enderror">
+                                            <option selected disabled value="">{{ __('Select Branch') }}</option>
+                                            @foreach ($receiversBranch as $branch)
+                                                <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('to_branch')
+                                            <span class="invalid-feedback">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            
                                 <div class="col-12 col-md-6  mb-3">
-                                    <label for="to_branch" class="col-form-label">{{ __('To-Branch') }}</label>
-                                    <select name="to_branch" id="to_branch"
-                                        class="form-select input-lg dynamic @error('to_branch') is-invalid @enderror">
-
-                                        <option selected disabled value="">{{ __('Select Branch') }}
-                                        </option>
-                                        @foreach ($data as $branch)
-                                            <option value="{{ $branch->id }}">{{ $branch->branch_name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('to_branch')
+                                    <label for="receiver_city" class="col-form-label">{{ __('Receiver City') }}</label>
+                                    
+                                    <input type="text" name="receiver_city" class="form-control   @error('receiver_city') is-invalid @enderror" type="phone"
+                                    id="receiver_city">
+                                    @error('receiver_city')
                                         <span class="invalid-feedback">
                                             {{ $message }}
                                         </span>
                                     @enderror
                                 </div>
-                                <div class="col-12   mb-3">
+                                {{-- <div class="col-12   mb-3">
                                     <label for="description" class=" col-form-label"><span
                                             class="text-danger">*</span>{{ __('Receiver City') }}</label>
-                                    {{-- <input name="description"value="{{ old('description') }}"
-                                            class="form-control   @error('description') is-invalid @enderror" type="text"
-                                            id="description" placeholder="Description"> --}}
-
+                                
                                     <textarea name="receiver_city" class="form-control   @error('receiver_city') is-invalid @enderror" id="receiver_city"
                                         placeholder="Address"></textarea>
                                     @error('receiver_city')
@@ -170,7 +181,7 @@
                                             {{ $message }}
                                         </span>
                                     @enderror
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -181,26 +192,20 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ __('Package Detail') }}</h5>
                             <div class="row mb-3">
-
-                                <div class="col-md-2  mb-3">
-                                    <label for="price" class=" col-form-label">
-                                        {{ __('Package Tag') }}</label>
-                                    <input name="package_tag" disabled value="{{ old('price') }}"
-                                        class="form-control   @error('package_tag') is-invalid @enderror" type="number"
-                                        id="price" placeholder="">
-                                    @error('package_tag')
-                                        <span class="invalid-feedback">
-                                            {{ $message }}
-                                        </span>
-                                    @enderror
-                                </div>
-
+                               
                                 <div class=" col-md-2  mb-3">
-                                    <label for="package_type" class=" col-form-label"> <span class="text-danger">*</span>
+                                    <label for="package_type" class="col-form-label"> <span class="text-danger">*</span>
                                         {{ __('Package Type') }}</label>
-                                    <input name="package_type" value="{{ old('package_type') }}"
-                                        class="form-control   @error('package_type') is-invalid @enderror" type="text"
-                                        id="price" placeholder="">
+                                        <select name="package_type" id="package_type"
+                                        class="form-select input-lg dynamic package_type @error('package_type') is-invalid @enderror">
+                                       
+                                        <option selected disabled value="">{{ __('Select Package Type') }}
+                                        </option>
+                                        @foreach ($category as $categories)
+                                            <option value="{{ $categories->id }}">{{ $categories->category }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                     @error('package_type')
                                         <span class="invalid-feedback">
                                             {{ $message }}
@@ -208,52 +213,45 @@
                                     @enderror
                                 </div>
 
-                                <div class=" col-md-2  mb-3">
+                                 <div class=" col-md-2  mb-3">
                                     <label for="price" class=" col-form-label"> <span class="text-danger">*</span>
                                         {{ __('Weight') }}</label>
-                                    <input name="weight" value="{{ old('price') }}"
-                                        class="form-control   @error('weight') is-invalid @enderror" type="number"
-                                        id="price" placeholder="">
+                                        <select name="weight" id="weight"
+                                        class="form-select input-lg weight_list @error('weight') is-invalid @enderror">
+                                        <option value="0" selected disabled>weight</option>
+                                    </select>
                                     @error('weight')
                                         <span class="invalid-feedback">
                                             {{ $message }}
                                         </span>
                                     @enderror
                                 </div>
-                                <div class="col-md-2  mb-3">
-                                    <label for="status" class="col-form-label"><span
-                                            class="text-danger">*</span>{{ __('Status') }}</label>
-                                    <select name="status" id="status"
-                                        class="form-select  @error('status') is-invalid @enderror">
-                                        <option value="" disabled selected>{{ __('--Select--') }}</option>
-                                        <option value="collected" {{ old('status') == 'collected' ? 'selected' : '' }}>
-                                            {{ __('Collected') }}
-                                        </option>
-                                        <option value="in-transit" {{ old('status') == 'in-transit' ? 'selected' : '' }}>
-                                            {{ __('In-Transit') }}
-                                        </option>
-                                        <option value="deliverd" {{ old('status') == 'deliverd' ? 'selected' : '' }}>
-                                            {{ __('Deliverd') }}
-                                        </option>
-
-                                    </select> @error('status')
+                                 <div class=" col-md-2  mb-3">
+                                    <label for="price" class=" col-form-label"> <span class="text-danger">*</span>
+                                        {{ __('price') }}</label>
+                                    <input name="price" value="" readonly
+                                        class="form-control   " type="number"
+                                        id="price" placeholder="">
+                                    @error('price')
                                         <span class="invalid-feedback">
                                             {{ $message }}
                                         </span>
                                     @enderror
                                 </div>
-                                <div class=" col-md-2  mb-3">
-                                    <label for="price" class=" col-form-label"> <span class="text-danger">*</span>
-                                        {{ __('price') }}</label>
-                                    <input name="price" value="{{ old('price') }}"
-                                        class="form-control @error('price') is-invalid @enderror " type="number"
-                                        id="price" placeholder="Price">
-                                    {{-- @error('price')
+                                <div class="col-md-2  mb-3">
+                                    <label for="status" class="col-form-label">{{ __('Status') }}</label>
+                                    
+                                    <input name="status" type="text" value="{{"collected"}}" readonly
+                                    class="form-control   @error('status') is-invalid @enderror" type="phone"
+                                    id="status">
+                                    @error('status')
                                         <span class="invalid-feedback">
                                             {{ $message }}
                                         </span>
-                                    @enderror --}}
+                                    @enderror
                                 </div>
+                                
+                                
 
                                 {{-- <div class=" col-md-3  mb-3">
                                     <label for="price" class=" col-form-label"> <span class="text-danger">*</span>
@@ -297,6 +295,98 @@
 
         </section>
     </main>
+
+    {{-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function($) {
+            var selectpicker = $('.selectpicker').val();
+        });
+    </script> --}}
+ <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var branchSelect = document.getElementById('to_branch');
+            var branchSearchInput = document.getElementById('branch_search');
+
+            branchSearchInput.addEventListener('input', function() {
+                var filter = branchSearchInput.value.toLowerCase();
+                var options = branchSelect.getElementsByTagName('option');
+
+                for (var i = 0; i < options.length; i++) {
+                    var option = options[i];
+                    var branchName = option.textContent.toLowerCase();
+                    if (branchName.includes(filter)) {
+                        option.style.display = '';
+                    } else {
+                        option.style.display = 'none';
+                    }
+                }
+            });
+        });
+    </script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+        $(document).on('change', '.package_type', function(){  
+            var cat_id = $(this).val();
+           
+            var div = $(this).parent();
+            var op = "";
+
+            $.ajax({
+                type: 'get',
+                url:'{!!URL::to('fetchWeight')!!}',
+				data:{'id':cat_id},
+				success:function(data){
+				
+					// console.log(data.length);
+					op+='<option value="0" selected disabled>choose weight</option>';
+					for(var i=0;i<data.length;i++){
+					op+='<option value="'+data[i].id+'">'+data[i].weight+'</option>';
+                    
+                }
+                var weightList = document.getElementById('weight');
+             
+                   weightList.innerHTML = op;
+                    
+            }
+            })
+        });
+        $(document).on('change','.weight_list',function () {
+			var weight_id=$(this).val();
+
+			var a=$(this).parent();
+			console.log(weight_id);
+			var op="";
+			$.ajax({
+				type:'get',
+				url:'{!!URL::to('fetchPrice')!!}',
+				data:{'id':weight_id},
+				dataType:'json',
+				success:function(data){
+			
+			
+                    var price_field = document.getElementById('price');
+                  
+                    price_field.value = data.price;
+				},
+				error:function(){
+
+				}
+			});
+
+
+		});
+
+    });
+    </script>
+    
+  
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     @if (Session::has('success'))

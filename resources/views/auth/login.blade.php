@@ -65,6 +65,7 @@
 
                             <div class="text-center">
                                 <p>Dont have an account? <span><a href="{{ route('register') }}">Signup here</a></span></p>
+
                             </div>
 
                         </div>

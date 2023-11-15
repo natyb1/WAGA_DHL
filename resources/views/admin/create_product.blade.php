@@ -1,4 +1,3 @@
-
 @extends('admin.body.admin_master')
 @section('main')
     <main id="main" class="main">
@@ -20,7 +19,6 @@
                                 @csrf
                                 <h5 class="card-title">{{ 'Sender Information' }}</h5>
                                 <div class="row mb-3">
-
                                     <div class="col-12 col-md-6  mb-3">
                                         <label for="sender_name" class=" col-form-label"><span
                                                 class="text-danger">*</span>{{ 'Sender Name' }}</label>
@@ -134,16 +132,19 @@
                                     @enderror
                                 </div>
 
-                               
                                 <div class="container">
                                     <div class="col-12 col-md-6 mb-3">
                                         <label for="to_branch" class="col-form-label">{{ __('To-Branch') }}</label>
-                                        <input type="text" id="branch_autocomplete" class="form-control" placeholder="Search Branch">
+                                        <input type="text" id="branch_autocomplete" class="form-control"
+                                            placeholder="Search Branch">
                                         <div class="autocomplete-dropdown">
-                                            <select name="to_branch" id="to_branch" class="border custom-select @error('to_branch') is-invalid @enderror">
-                                                <option selected disabled value="">{{ __('Select Branch') }}</option>
+                                            <select name="to_branch" id="to_branch"
+                                                class="border custom-select @error('to_branch') is-invalid @enderror">
+                                                <option selected disabled value="">{{ __('Select Branch') }}
+                                                </option>
                                                 @foreach ($receiversBranch as $branch)
-                                                    <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
+                                                    <option value="{{ $branch->id }}">{{ $branch->branch_name }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -154,9 +155,6 @@
                                         @enderror
                                     </div>
                                 </div>
-                                
-                                
-
 
                                 <div class="col-12   mb-3">
                                     <label for="description" class=" col-form-label"><span
@@ -180,13 +178,13 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ __('Package Detail') }}</h5>
                             <div class="row mb-3">
-                               
+
                                 <div class=" col-md-2  mb-3">
                                     <label for="package_type" class="col-form-label"> <span class="text-danger">*</span>
                                         {{ __('Package Type') }}</label>
-                                        <select name="package_type" id="package_type"
+                                    <select name="package_type" id="package_type"
                                         class="form-select input-lg dynamic package_type @error('package_type') is-invalid @enderror">
-                                       
+
                                         <option selected disabled value="">{{ __('Select Package Type') }}
                                         </option>
                                         @foreach ($category as $categories)
@@ -200,11 +198,11 @@
                                         </span>
                                     @enderror
                                 </div>
-                               
-                                 <div class=" col-md-2  mb-3">
+
+                                <div class=" col-md-2  mb-3">
                                     <label for="price" class=" col-form-label"> <span class="text-danger">*</span>
                                         {{ __('Weight') }}</label>
-                                        <select name="weight" id="weight"
+                                    <select name="weight" id="weight"
                                         class="form-select input-lg weight_list @error('weight') is-invalid @enderror">
                                         <option value="0" selected disabled>weight</option>
                                     </select>
@@ -214,11 +212,10 @@
                                         </span>
                                     @enderror
                                 </div>
-                                 <div class=" col-md-2  mb-3">
+                                <div class=" col-md-2  mb-3">
                                     <label for="price" class=" col-form-label"> <span class="text-danger">*</span>
                                         {{ __('price') }}</label>
-                                    <input name="price" value="" readonly
-                                        class="form-control   " type="number"
+                                    <input name="price" value="" readonly class="form-control   " type="number"
                                         id="price" placeholder="">
                                     @error('price')
                                         <span class="invalid-feedback">
@@ -228,10 +225,10 @@
                                 </div>
                                 <div class="col-md-2  mb-3">
                                     <label for="status" class="col-form-label">{{ __('Status') }}</label>
-                                    
-                                    <input name="status" type="text" value="{{"collected"}}" readonly
-                                    class="form-control   @error('status') is-invalid @enderror" type="phone"
-                                    id="status">
+
+                                    <input name="status" type="text" value="{{ 'collected' }}" readonly
+                                        class="form-control   @error('status') is-invalid @enderror" type="phone"
+                                        id="status">
                                     @error('status')
                                         <span class="invalid-feedback">
                                             {{ $message }}
@@ -256,106 +253,107 @@
         </section>
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var branchSelect = document.getElementById('to_branch');
+            var branchAutocompleteInput = document.getElementById('branch_autocomplete');
+            var autocompleteDropdown = document.querySelector('.autocomplete-dropdown');
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var branchSelect = document.getElementById('to_branch');
-        var branchAutocompleteInput = document.getElementById('branch_autocomplete');
-        var autocompleteDropdown = document.querySelector('.autocomplete-dropdown');
+            branchAutocompleteInput.addEventListener('input', function() {
+                var filter = branchAutocompleteInput.value.toLowerCase();
+                var options = branchSelect.getElementsByTagName('option');
 
-        branchAutocompleteInput.addEventListener('input', function() {
-            var filter = branchAutocompleteInput.value.toLowerCase();
-            var options = branchSelect.getElementsByTagName('option');
+                // Clear the dropdown before populating it with matching options
+                autocompleteDropdown.innerHTML = '';
 
-            // Clear the dropdown before populating it with matching options
-            autocompleteDropdown.innerHTML = '';
+                for (var i = 0; i < options.length; i++) {
+                    var option = options[i];
+                    var branchName = option.textContent.toLowerCase();
 
-            for (var i = 0; i < options.length; i++) {
-                var option = options[i];
-                var branchName = option.textContent.toLowerCase();
+                    // Check if branchName starts with the filter
+                    if (branchName.indexOf(filter) === 0) {
+                        // Create a new option element for the autocomplete dropdown
+                        var autocompleteOption = document.createElement('div');
+                        autocompleteOption.textContent = branchName;
 
-                // Check if branchName starts with the filter
-                if (branchName.indexOf(filter) === 0) {
-                    // Create a new option element for the autocomplete dropdown
-                    var autocompleteOption = document.createElement('div');
-                    autocompleteOption.textContent = branchName;
+                        // Add a click event listener to populate the select and close the dropdown
+                        autocompleteOption.addEventListener('click', function() {
+                            branchAutocompleteInput.value = this.textContent;
+                            branchSelect.value = option.value;
+                            autocompleteDropdown.innerHTML = ''; // Close the dropdown
+                        });
 
-                    // Add a click event listener to populate the select and close the dropdown
-                    autocompleteOption.addEventListener('click', function() {
-                        branchAutocompleteInput.value = this.textContent;
-                        branchSelect.value = option.value;
-                        autocompleteDropdown.innerHTML = '';  // Close the dropdown
-                    });
-
-                    // Append the option to the autocomplete dropdown
-                    autocompleteDropdown.appendChild(autocompleteOption);
+                        // Append the option to the autocomplete dropdown
+                        autocompleteDropdown.appendChild(autocompleteOption);
+                    }
                 }
-            }
+            });
         });
-    });
-</script>
+    </script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(document).on('change', '.package_type', function() {
+                var cat_id = $(this).val();
+
+                var div = $(this).parent();
+                var op = "";
+
+                $.ajax({
+                    type: 'get',
+                    url: '{!! URL::to('fetchWeight') !!}',
+                    data: {
+                        'id': cat_id
+                    },
+                    success: function(data) {
+
+                        // console.log(data.length);
+                        op += '<option value="0" selected disabled>choose weight</option>';
+                        for (var i = 0; i < data.length; i++) {
+                            op += '<option value="' + data[i].id + '">' + data[i].weight +
+                                '</option>';
+
+                        }
+                        var weightList = document.getElementById('weight');
+
+                        weightList.innerHTML = op;
+
+                    }
+                })
+            });
+            $(document).on('change', '.weight_list', function() {
+                var weight_id = $(this).val();
+
+                var a = $(this).parent();
+                console.log(weight_id);
+                var op = "";
+                $.ajax({
+                    type: 'get',
+                    url: '{!! URL::to('fetchPrice') !!}',
+                    data: {
+                        'id': weight_id
+                    },
+                    dataType: 'json',
+                    success: function(data) {
 
 
+                        var price_field = document.getElementById('price');
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+                        price_field.value = data.price;
+                    },
+                    error: function() {
 
-<script type="text/javascript">
-    $(document).ready(function(){
-    $(document).on('change', '.package_type', function(){  
-        var cat_id = $(this).val();
-       
-        var div = $(this).parent();
-        var op = "";
+                    }
+                });
 
-        $.ajax({
-            type: 'get',
-            url:'{!!URL::to('fetchWeight')!!}',
-            data:{'id':cat_id},
-            success:function(data){
-            
-                // console.log(data.length);
-                op+='<option value="0" selected disabled>choose weight</option>';
-                for(var i=0;i<data.length;i++){
-                op+='<option value="'+data[i].id+'">'+data[i].weight+'</option>';
-                
-            }
-            var weightList = document.getElementById('weight');
-         
-               weightList.innerHTML = op;
-                
-        }
-        })
-    });
-    $(document).on('change','.weight_list',function () {
-        var weight_id=$(this).val();
 
-        var a=$(this).parent();
-        console.log(weight_id);
-        var op="";
-        $.ajax({
-            type:'get',
-            url:'{!!URL::to('fetchPrice')!!}',
-            data:{'id':weight_id},
-            dataType:'json',
-            success:function(data){
-        
-        
-                var price_field = document.getElementById('price');
-              
-                price_field.value = data.price;
-            },
-            error:function(){
+            });
 
-            }
         });
+    </script>
 
-
-    });
-
-});
-</script>
-
-      
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
     @if (Session::has('success'))

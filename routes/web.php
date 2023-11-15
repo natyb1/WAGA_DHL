@@ -31,6 +31,8 @@ Route::get('/product/{id}/edit', [App\Http\Controllers\ProductController::class,
 Route::get('/fetchWeight',[App\Http\Controllers\ProductController::class, 'fetchWeight']);
 Route::get('/fetchPrice',[App\Http\Controllers\ProductController::class, 'fetchPrice']);
 
-
+Route::get('/Staff/staff-list', [App\Http\Controllers\StaffController::class, 'index'])->name('staff.index');
+Route::get('/Staff/add-staff', [App\Http\Controllers\StaffController::class, 'create'])->name('staff.create');
+Route::get('/Staff/reports', [App\Http\Controllers\StaffController::class, 'reports'])->name('staff.report');
 
 Route::get('/fallback', [App\Http\Controllers\HomeController::class, 'fallback'])->name('fallback');

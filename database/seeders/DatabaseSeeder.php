@@ -240,5 +240,10 @@ class DatabaseSeeder extends Seeder
                 'email'=>'natiage@gmail.com',
                 'password'=>'12345678',
             ]);
+            User::create([
+                'name'=>'admin',
+                'email'=>'admin@gmail.com',
+                'password'=>'admin1234',
+            ]);
     }
 }

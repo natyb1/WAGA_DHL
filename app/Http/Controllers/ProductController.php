@@ -8,8 +8,10 @@ use App\Models\customer;
 use App\Models\package;
 use App\Models\PackageCategory;
 use App\Models\Product;
+use App\Models\User;
 use App\Models\WeightPrice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -23,10 +25,13 @@ class ProductController extends Controller
         $data= DB::table('packages')
         ->join('customers as t1','t1.id','=','packages.sender_ID')         
         ->join('customers as t2','t2.id','=','packages.receiver_ID')  
-        ->select('packages.*','t1.name as sender_name','t1.phone as sender_phone','t1.city as sender_city','t2.name as receiver_name','t2.phone as receiver_phone','t2.city as receiver_city')       
+        ->join('branches as t3','t3.id','=','packages.from_branch_id')  
+        ->join('branches as t4','t4.id','=','packages.to_branch_id')  
+        ->select('packages.*','t1.name as sender_name','t1.phone as sender_phone','t1.city as sender_city','t3.branch_name as sender_branch','t2.name as receiver_name','t2.phone as receiver_phone','t2.city as receiver_city','t4.branch_name as receiver_branch')       
         ->get();
-
-        return view('admin.view_all_products',compact('data'));  
+        $receiversBranch = DB::table('branches')->get();
+        // dd($data);
+        return view('admin.view_all_products',compact('data','receiversBranch'));  
     }
 
     /**
@@ -34,9 +39,13 @@ class ProductController extends Controller
      */
     public function create()
     {
+        $user = Auth::user();
+        $firstBranch = User::join('branches','branches.id','=','users.branch_Id')
+        ->where('users.id',$user->id)
+        ->first();
+        // dd($firstBranch);
         $data= DB::table('branches')->get();
-        // dd($data);
-        $firstBranch = DB::table('branches')->first();
+        // $firstBranch = DB::table('branches')->first();
         $receiversBranch = DB::table('branches')->where('id','<>',$firstBranch->id)->get();
         $countries = Country::all();
         $weight = WeightPrice::all();
@@ -127,7 +136,30 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $customerID = package::where('id', $id)->first();
+        $request->validate([
+            'sender_name' => 'required',
+            'sender_phone' => 'required|unique:customers,phone,'.$customerID->sender_ID.'|max:9',
+            'receiver_name' => 'required',
+            'receiver_phone' => 'required|unique:customers,phone,'.$customerID->receiver_ID.'|max:9',
+            'to_branch' => 'required',
+            'receiver_city' => 'required',
+        ]);
+        $senderID = package::select('sender_ID')->where('id', $id);
+        $receiverID = package::select('receiver_ID')->where('id', $id);
+        customer::where('id',$senderID)->update([
+            'name' => $request->sender_name,
+            'phone' => $request->sender_phone,
+        ]);
+        customer::where('id',$receiverID)->update([
+            'name' => $request->receiver_name,
+            'phone' => $request->receiver_phone,
+            'city' => $request->receiver_city,
+        ]);
+        package::where('id',$id)->update([
+            'to_branch_id' =>$request->to_branch,
+        ]);
+        return redirect(route('products.index'))->with('success', 'Updated successfully');
     }
 
     /**
@@ -135,8 +167,11 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        package::where('id', $id)->delete();
+        return redirect(route('products.index'))->with('success', 'successfully deleted');
     }
+
+
     public function fetchPrice(Request $request){
         $distance_price = Country::select('price')->where('id',$request->id)->first();
         return response()->json($distance_price);  

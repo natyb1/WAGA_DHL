@@ -21,8 +21,8 @@ return new class extends Migration
             $table->unsignedBigInteger('from_branch_id');
             $table->unsignedBigInteger('to_branch_id');
             $table->float('weight');
-            $table->foreign('sender_ID')->references('id')->on('customers');
-            $table->foreign('receiver_ID')->references('id')->on('customers');
+            $table->foreign('sender_ID')->references('id')->on('customers')->onDelete('cascade');
+            $table->foreign('receiver_ID')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('from_branch_id')->references('id')->on('branches');
             $table->foreign('to_branch_id')->references('id')->on('branches');
             $table->timestamps();

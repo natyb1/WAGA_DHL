@@ -85,14 +85,15 @@
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                     </div>
-                                                    <div class="modal-body">
+                                                    <div class="modal-body" id="edit_modal">
                                                         <div class="row">
                                                             <div class="col col-md-6">
                                                                 <div class="card">
                                                                     <div class="card-body">
-                                                                        <form method="POST" action=""
+                                                                        <form method="POST" action="{{route('update_customer',$data->id)}}"
                                                                             class="text-capitalize">
                                                                             @csrf
+                                                                            @method('PATCH')
                                                                             <h5 class="card-title">
                                                                                 {{ __('Sender Information') }}</h5>
                                                                             <div class="row mb-3">
@@ -136,28 +137,11 @@
                                                                                 </div>
 
                                                                                 <div class="col-12 col-md-6  mb-3">
-                                                                                    <label for="from_branch"
-                                                                                        class="col-form-label">{{ __('From-Branch') }}</label>
-                                                                                    <select name="from_branch"
-                                                                                        id="from_branch"
-                                                                                        class="form-select input-lg dynamic @error('from_branch') is-invalid @enderror">
-
-                                                                                        <option selected disabled
-                                                                                            value="">
-                                                                                            {{ __('Select Branch') }}
-                                                                                        </option>
-                                                                                        <option value="">fetch branch
-                                                                                            1</option>
-                                                                                        <option value="">fetch branch
-                                                                                            1</option>
-                                                                                        <option value="">fetch branch
-                                                                                            1</option>
-                                                                                        <option value="">fetch branch
-                                                                                            1</option>
-                                                                                        {{-- <option value="{{ $branch->id }}">{{ $branch->branch_name }}
-                                                                                            </option> --}}
-
-                                                                                    </select>
+                                                                                    <label for="from_branch" class="col-form-label">{{ 'From-Branch' }}</label>
+                                                                                    <input type="hidden" name="from_branch" value="{{ $data->id }}">
+                                                                                    <input type="text" value="{{ $data->sender_branch }}" readonly
+                                                                                        class="form-control   @error('from_branch') is-invalid @enderror" type="phone"
+                                                                                        id="from_branch">
                                                                                     @error('from_branch')
                                                                                         <span class="invalid-feedback">
                                                                                             {{ $message }}
@@ -169,8 +153,8 @@
                                                                                     <label for="sender_city"
                                                                                         class=" col-form-label"><span
                                                                                             class="text-danger">*</span>{{ __('Sender City') }}</label>
-                                                                                    <textarea name="sender_city" class="form-control   @error('sender_city') is-invalid @enderror" id="sender_city"
-                                                                                        placeholder="Address"></textarea>
+                                                                                    <textarea name="sender_city" readonly class="form-control @error('sender_city') is-invalid @enderror" id="sender_city"
+                                                                                        placeholder="Address">{{ $data->sender_city}}</textarea>
                                                                                     @error('sender_city')
                                                                                         <span class="invalid-feedback">
                                                                                             {{ $message }}
@@ -195,7 +179,7 @@
                                                                                 <label for="receiver_name"
                                                                                     class=" col-form-label"><span
                                                                                         class="text-danger">*</span>{{ __('Receiver Name') }}</label>
-                                                                                <input name="receiver_name" value=""
+                                                                                <input name="receiver_name" value="{{ $data->receiver_name }}"
                                                                                     class="form-control  @error('receiver_name') is-invalid @enderror"
                                                                                     type="text"
                                                                                     placeholder="Isac Newton">
@@ -214,7 +198,7 @@
                                                                                     <span class="input-group-text"
                                                                                         id="basic-addon1">+251</span>
                                                                                     <input name="receiver_phone"
-                                                                                        value=""
+                                                                                    value="{{ $data->receiver_phone }}"
                                                                                         class="form-control   @error('receiver_phone') is-invalid @enderror"
                                                                                         type="number" id="receiver_phone"
                                                                                         aria-label="phone"
@@ -239,13 +223,9 @@
                                                                                         {{ __('Select Branch') }}
                                                                                     </option>
 
-                                                                                    <option value="">fetch Branch1
-                                                                                    </option>
-                                                                                    <option value="">fetch Branch2
-                                                                                    </option>
-                                                                                    <option value="">fetch Branch3
-                                                                                    </option>
-
+                                                                                    @foreach ($receiversBranch as $branch)
+                                                                                    <option value="{{ $branch->id }}">{{ $branch->branch_name }}</option>
+                                                                                    @endforeach
                                                                                 </select>
                                                                                 @error('to_branch')
                                                                                     <span class="invalid-feedback">
@@ -259,7 +239,7 @@
                                                                                     class=" col-form-label"><span
                                                                                         class="text-danger">*</span>{{ __('Receiver City') }}</label>
                                                                                 <textarea name="receiver_city" class="form-control   @error('receiver_city') is-invalid @enderror" id="receiver_city"
-                                                                                    placeholder="Address"></textarea>
+                                                                                    placeholder="Address">{{ $data->receiver_city}}</textarea>
                                                                                 @error('receiver_city')
                                                                                     <span class="invalid-feedback">
                                                                                         {{ $message }}
@@ -271,7 +251,7 @@
                                                                 </div>
                                                             </div>
                                                             {{-- Shipment Detail --}}
-                                                            <div class="col col-md-12">
+                                                            {{-- <div class="col col-md-12">
                                                                 <div class="card">
                                                                     <div class="card-body">
                                                                         <h5 class="card-title">{{ __(' Detail') }}</h5>
@@ -314,7 +294,7 @@
                                                                                     class=" col-form-label"> <span
                                                                                         class="text-danger">*</span>
                                                                                     {{ __('Weight') }}</label>
-                                                                                <input name="weight" value=""
+                                                                                <input name="weight" value="{{ $data->weight }}"
                                                                                     class="form-control   @error('weight') is-invalid @enderror"
                                                                                     type="number" id="price"
                                                                                     placeholder="">
@@ -367,20 +347,20 @@
                                                                         </div>
                                                                     </div>
                                                                 </div>
+                                                            </div> --}}
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Update
+                                                                </button>
                                                             </div>
-
                                                             </form>
 
                                                             {{-- Form ends here becareful when submiting data  savebutton  not  inside form   --}}
 
                                                         </div>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Close</button>
-                                                        <button type="button" class="btn btn-primary">Update
-                                                        </button>
-                                                    </div>
+                                                   
                                                 </div>
                                             </div>
                                         </div>
@@ -406,7 +386,7 @@
                                                         <button type="button" class="btn btn-secondary"
                                                             data-bs-dismiss="modal">{{ __('Close') }}</button>
 
-                                                        <form action="Action Needed HERE!" method="POST">
+                                                        <form action="{{ route('delete_customer', $data->id) }}" method="POST">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button class="btn btn-danger"
@@ -450,11 +430,4 @@
         </script>
     @endif
 
-    @if ($errors->any())
-        <script>
-            $(document).ready(function() {
-                $('#addnew{{ $test->item_id }}').modal('show');
-            });
-        </script>
-    @endif
 @endsection

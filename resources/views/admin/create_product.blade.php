@@ -71,8 +71,8 @@
                                             class="form-control   @error('description') is-invalid @enderror" type="text"
                                             id="description" placeholder="Description"> --}}
 
-                                        <textarea name="sender_city" class="form-control   @error('sender_city') is-invalid @enderror" id="sender_city"
-                                            placeholder="Address"></textarea>
+                                        <textarea name="sender_city" readonly class="form-control   @error('sender_city') is-invalid @enderror" id="sender_city"
+                                            placeholder="Address">{{$firstBranch->city}}</textarea>
                                         @error('sender_city')
                                             <span class="invalid-feedback">
                                                 {{ $message }}
